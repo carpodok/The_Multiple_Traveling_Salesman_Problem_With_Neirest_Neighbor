@@ -1,6 +1,10 @@
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 @SuppressWarnings({"unchecked"})
@@ -41,7 +45,6 @@ public class Main {
 
     public static void main(String[] args) {
 
-
         try {
             params = CliFactory.parseArguments(Params.class, args);
         } catch (ArgumentValidationException e) {
@@ -72,7 +75,7 @@ public class Main {
         countOfinsertNodeBetweenRoutes = 0;
 
         NNInSol();
-      //  print(copyAllOfBestAllOfNNInSol, copyIndexesOfDepotsOfNNInSol, params.getVerbose());
+        print(copyAllOfBestAllOfNNInSol, copyIndexesOfDepotsOfNNInSol, params.getVerbose());
 
 
        int inCostNN = getTotalCost();
@@ -82,6 +85,8 @@ public class Main {
         System.out.println();
         System.out.println("NN Initial Cost :" + inCostNN);
         System.out.println("Best Cost With NN Initial Cost :" + getTotalCost());
+
+        setJSON();
 
     }
 
@@ -111,7 +116,7 @@ public class Main {
         bestCostFromNNInSol = Integer.MAX_VALUE;
         copyAllOfBestAllOfNNInSol = new HashMap<>();
 
-        NN(params.getNumDepots(), params.getNumSalesmen(), 37);
+        NN(params.getNumDepots(), params.getNumSalesmen(), 65);
         calculateTotalCost();
 
         bestCostFromNNInSol = getTotalCost();
@@ -119,7 +124,6 @@ public class Main {
         copyIndexesOfDepotsOfNNInSol = (LinkedList<Integer>) indexesOfDepots.clone();
 
     }
-
 
     static void part2WithRandomInSol() {
 
@@ -214,7 +218,6 @@ public class Main {
         }
     }
 
-
     public static HashMap<Integer, LinkedList<LinkedList<Integer>>> copy(
             HashMap<Integer, LinkedList<LinkedList<Integer>>> original) {
         HashMap<Integer, LinkedList<LinkedList<Integer>>> copy = new HashMap<>();
@@ -263,7 +266,6 @@ public class Main {
             all.put(i, list);
 
         }
-
         for (int i = 0; i < numberOfCities - d; i++) {
 
             all.get(produceRandomNum(d)).get(produceRandomNum(s)).add(produceRandomIndexFromList(unusedIndexesOfCities));
@@ -338,7 +340,6 @@ public class Main {
 
         int countOfEachRoute = (numberOfCities - d) / (d * s);
 
-
         for (int i = 0; i < numberOfCities; i++) {
             // unusedIndexesOfCities.add(distancesOfCities[initialCity][i]);
             unusedIndexesOfCities.add(i);
@@ -352,9 +353,6 @@ public class Main {
                 unusedIndexesOfCities.remove(Integer.valueOf(initialCity));
                 preCity = initialCity;
             } else {
-                //  int index1 = produceRandomIndexFromList(unusedIndexesOfCities);
-                // indexesOfDepots.add(index1);
-
                 int nearestCurr = nearestNeighbor(preCity);
                 indexesOfDepots.add(nearestCurr);
                 preCity = nearestCurr;
@@ -412,8 +410,6 @@ public class Main {
                 }
             }
         }
-
-        //  usedIndexesOfCities.add(nearestCity);
 
         return nearestCity;
     }
@@ -647,7 +643,6 @@ public class Main {
 
         int firstRandomNode = all.get(randomFirstIndexOfDepots).get(randomFirstIndexOfRouteOfDepot).get(randomFirstIndexOfCityOfRouteOfDepot);
 
-
         int randomSecondIndexOfDepots = (int) (Math.random() * indexesOfDepots.size());
 
         int randomSecondIndexOfRouteOfDepot = (int) (Math.random() * all.get(randomSecondIndexOfDepots).size());
@@ -733,5 +728,46 @@ public class Main {
 
     public static void setIndexesOfDepots(LinkedList<Integer> indexesOfDepots) {
         Main.indexesOfDepots = indexesOfDepots;
+    }
+
+
+    static void setJSON(){
+        JSONArray trying = new JSONArray();
+        JSONObject sol = new JSONObject();
+
+        for (int i = 0; i < all.size(); i++) {
+            JSONArray depotsDetails = new JSONArray();
+            JSONObject depots = new JSONObject();
+
+            for (int j = 0; j < all.get(i).size(); j++) {
+
+                StringBuilder route = new StringBuilder();
+                for (int k = 0; k < all.get(i).get(j).size(); k++) {
+                    if (k == all.get(i).get(j).size()-1){
+                        route.append(all.get(i).get(j).get(k));
+                    }else {
+                        route.append(all.get(i).get(j).get(k)).append(" ");
+
+                    }
+                }
+                depotsDetails.add(String.valueOf(route));
+            }
+
+            String depotIndex = String.valueOf(indexesOfDepots.get(i));
+            depots.put("depot", depotIndex);
+            depots.put("Route", depotsDetails);
+            trying.add(depots);
+        }
+
+        sol.put("Solution", trying);
+
+
+        try (FileWriter file = new FileWriter("Output.json")) {
+            file.write(sol.toJSONString());
+            file.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
