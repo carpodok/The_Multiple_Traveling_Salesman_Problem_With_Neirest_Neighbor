@@ -62,18 +62,20 @@ public class Main {
         randomInSol();
         print(copyAllOfBestAllOfRandomInSol, copyIndexesOfDepotsOfRandomInSol, params.getVerbose());
 
-        int randomInCost = getTotalCost();
-        System.out.println("Random Inıtial Cost :" + randomInCost);
+        int inCostRandomp1 = getTotalCost();
+        System.out.println("Random Inıtial Cost :" + inCostRandomp1);
 
 
         part2WithRandomInSol();
         System.out.println("\n\n******************** Part 2 With Random Initial ********************");
         print(params.getVerbose());
 
-        System.out.println("Random Inıtial Cost :" + randomInCost);
-        System.out.println("Best Cost With Random Initial Cost :" + getTotalCost());
+        System.out.println("\nRandom Inıtial Cost :" + inCostRandomp1);
 
-        System.out.println("*****************************************************************************\n\n\n");
+        int inCosRandomp2 = getTotalCost();
+        System.out.println("Best Cost With Random Initial Cost :" + inCosRandomp2);
+
+        System.out.println("*****************************************************************************");
         countOfswapNodesInRoute = 0;
         countOfswapHubWithNodeInRoute = 0;
         countOfswapNodesBetweenRoutes = 0;
@@ -85,20 +87,28 @@ public class Main {
         System.out.println("\n\n******************** Part 1 With NN Initial ********************");
         print(copyAllOfBestAllOfNNInSol, copyIndexesOfDepotsOfNNInSol, params.getVerbose());
 
-       int inCostNN = getTotalCost();
+        int inCostNNp1 = getTotalCost();
 
-        System.out.println("NN Initial Cost :" + inCostNN);
-
+        System.out.println("NN Initial Cost :" + inCostNNp1);
 
 
         part2WithNNInSol();
         System.out.println("\n\n******************** Part 2 With NN Initial ********************");
         print(params.getVerbose());
-        System.out.println();
-        System.out.println("NN Initial Cost :" + inCostNN);
-        System.out.println("Best Cost With NN Initial Cost :" + getTotalCost());
+
+        System.out.println("\nNN Initial Cost :" + inCostNNp1);
+
+        int inCostNNp2 = getTotalCost();
+        System.out.println("Best Cost With NN Initial Cost :" + inCostNNp2);
 
         setJSON();
+
+
+        System.out.println("\n\n*********************************************** COMPARING ***********************************************\n");
+
+        System.out.println("Part 1 with Random Initial Solution : " + inCostRandomp1 + "      Part 1 with NN Initial Solution : " + inCostNNp1);
+        System.out.println("Part 2 with Random Initial Solution : " + inCosRandomp2 + "      Part 2 with NN Initial Solution : " + inCostNNp2);
+
 
     }
 
@@ -111,7 +121,7 @@ public class Main {
 
         for (int i = 0; i < 100000; i++) {
 
-              travel(params.getNumDepots(), params.getNumSalesmen());
+            travel(params.getNumDepots(), params.getNumSalesmen());
 
             calculateTotalCost();
 
@@ -321,7 +331,7 @@ public class Main {
                 int cityNumForRoute;
 
                 if (i == d - 1 && j == s - 1) {
-                    cityNumForRoute = unusedIndexesOfCities.size() ;
+                    cityNumForRoute = unusedIndexesOfCities.size();
 
                 } else {
                     cityNumForRoute = countOfEachRoute;
@@ -457,7 +467,7 @@ public class Main {
 
         }*/
 
-       // System.out.println("Total Cost From Part 2 : " + getTotalCost());
+        // System.out.println("Total Cost From Part 2 : " + getTotalCost());
         System.out.println("countOfswapNodesInRoute :" + countOfswapNodesInRoute);
         System.out.println("countOfswapHubWithNodeInRoute :" + countOfswapHubWithNodeInRoute);
         System.out.println("countOfswapNodesBetweenRoutes :" + countOfswapNodesBetweenRoutes);
@@ -511,6 +521,10 @@ public class Main {
 
         return randomNum;
     }
+
+
+
+    // Move Operations
 
     public static void swapNodesInRoute() {
 
@@ -640,6 +654,8 @@ public class Main {
     }
 
 
+
+    // Set methods
     public static void setAll(HashMap<Integer, LinkedList<LinkedList<Integer>>> all) {
         Main.all = all;
     }
@@ -649,7 +665,7 @@ public class Main {
     }
 
 
-    static void setJSON(){
+    static void setJSON() {
         JSONArray trying = new JSONArray();
         JSONObject sol = new JSONObject();
 
@@ -661,9 +677,9 @@ public class Main {
 
                 StringBuilder route = new StringBuilder();
                 for (int k = 0; k < all.get(i).get(j).size(); k++) {
-                    if (k == all.get(i).get(j).size()-1){
+                    if (k == all.get(i).get(j).size() - 1) {
                         route.append(all.get(i).get(j).get(k));
-                    }else {
+                    } else {
                         route.append(all.get(i).get(j).get(k)).append(" ");
 
                     }
