@@ -56,31 +56,43 @@ public class Main {
 
         copyIndexesOfDepotsOfPart2 = new LinkedList<>();
 
-        // bestCost = Integer.MAX_VALUE;
+
+        System.out.println("******************** Part 1 With Random Initial ********************");
 
         randomInSol();
-       // print(copyAllOfBestAllOfRandomInSol, copyIndexesOfDepotsOfRandomInSol, params.getVerbose());
+        print(copyAllOfBestAllOfRandomInSol, copyIndexesOfDepotsOfRandomInSol, params.getVerbose());
 
-        System.out.println("Random Inıtial Cost :" + getTotalCost());
-       // randomInSol();
+        int randomInCost = getTotalCost();
+        System.out.println("Random Inıtial Cost :" + randomInCost);
+
+
         part2WithRandomInSol();
-      //  print(params.getVerbose());
+        System.out.println("\n\n******************** Part 2 With Random Initial ********************");
+        print(params.getVerbose());
+
+        System.out.println("Random Inıtial Cost :" + randomInCost);
         System.out.println("Best Cost With Random Initial Cost :" + getTotalCost());
 
-        System.out.println();
+        System.out.println("*****************************************************************************\n\n\n");
         countOfswapNodesInRoute = 0;
         countOfswapHubWithNodeInRoute = 0;
         countOfswapNodesBetweenRoutes = 0;
         countOfinsertNodeInRoute = 0;
         countOfinsertNodeBetweenRoutes = 0;
 
+
         NNInSol();
+        System.out.println("\n\n******************** Part 1 With NN Initial ********************");
         print(copyAllOfBestAllOfNNInSol, copyIndexesOfDepotsOfNNInSol, params.getVerbose());
 
-
        int inCostNN = getTotalCost();
-       // NNInSol();
+
+        System.out.println("NN Initial Cost :" + inCostNN);
+
+
+
         part2WithNNInSol();
+        System.out.println("\n\n******************** Part 2 With NN Initial ********************");
         print(params.getVerbose());
         System.out.println();
         System.out.println("NN Initial Cost :" + inCostNN);
@@ -99,7 +111,7 @@ public class Main {
 
         for (int i = 0; i < 100000; i++) {
 
-              travel2(params.getNumDepots(), params.getNumSalesmen());
+              travel(params.getNumDepots(), params.getNumSalesmen());
 
             calculateTotalCost();
 
@@ -237,7 +249,7 @@ public class Main {
         return copy;
     }
 
-    public static void travel2(int d, int s) {
+    public static void travel(int d, int s) {
 
         final int numberOfCities = TurkishNetwork.cities.length;
 
@@ -271,63 +283,6 @@ public class Main {
             all.get(produceRandomNum(d)).get(produceRandomNum(s)).add(produceRandomIndexFromList(unusedIndexesOfCities));
 
         }
-
-
-    }
-
-    public static void travel(int d, int s) {
-
-        final int numberOfCities = TurkishNetwork.cities.length;
-
-        int atLeastNum = d * (s + 1);
-
-        unusedIndexesOfCities = new ArrayList<>();
-        indexesOfDepots = new LinkedList<>();
-
-        for (int i = 0; i < numberOfCities; i++) {
-            unusedIndexesOfCities.add(i);
-        }
-
-        for (int i = 0; i < d; i++) {
-
-            int index1 = produceRandomIndexFromList(unusedIndexesOfCities);
-
-            indexesOfDepots.add(index1);
-
-            atLeastNum--;
-
-            LinkedList<LinkedList<Integer>> routesOfCurrDepot = new LinkedList<>();
-
-            for (int j = 0; j < s; j++) {
-
-                atLeastNum--;
-
-                int randomCityNumForRoute;
-
-                if (i == d - 1 && j == s - 1) {
-                    randomCityNumForRoute = unusedIndexesOfCities.size();
-
-                } else {
-
-                    randomCityNumForRoute = 1 + ((int) (Math.random() * (unusedIndexesOfCities.size() - atLeastNum - 1)));
-
-                }
-
-                LinkedList<Integer> citiesOfCurrRoutes = new LinkedList<>();
-
-                for (int k = 0; k < randomCityNumForRoute; k++) {
-
-                    int index2 = produceRandomIndexFromList(unusedIndexesOfCities);
-
-                    citiesOfCurrRoutes.add(index2);
-
-                }
-
-                routesOfCurrDepot.add(citiesOfCurrRoutes);
-            }
-            all.put(i, routesOfCurrDepot);
-        }
-
     }
 
 
@@ -341,7 +296,6 @@ public class Main {
         int countOfEachRoute = (numberOfCities - d) / (d * s);
 
         for (int i = 0; i < numberOfCities; i++) {
-            // unusedIndexesOfCities.add(distancesOfCities[initialCity][i]);
             unusedIndexesOfCities.add(i);
         }
         int preCity = 0;
@@ -370,9 +324,7 @@ public class Main {
                     cityNumForRoute = unusedIndexesOfCities.size() ;
 
                 } else {
-
                     cityNumForRoute = countOfEachRoute;
-
                 }
 
                 LinkedList<Integer> citiesOfCurrRoutes = new LinkedList<>();
@@ -441,38 +393,12 @@ public class Main {
 
     }
 
-    static int calculateTotalCost2(HashMap<Integer, LinkedList<LinkedList<Integer>>> all, LinkedList<Integer> indexesOfDepots) {
-        int totalCost = 0;
-
-        for (int i = 0; i < indexesOfDepots.size(); i++) {
-
-            for (int j = 0; j < all.get(i).size(); j++) {
-
-                for (int k = 0; k < all.get(i).get(j).size(); k++) {
-
-                    if (k == 0 || k == all.get(i).get(j).size() - 1) {
-                        totalCost += distances[indexesOfDepots.get(i)][all.get(i).get(j).get(k)];
-                    } else {
-                        totalCost += distances[all.get(i).get(j).get(k - 1)][all.get(i).get(j).get(k)];
-                    }
-
-                }
-
-            }
-
-        }
-
-        return totalCost;
-
-    }
-
     static int getTotalCost() {
         return totalCost;
     }
 
     public static void getRandomMoveOperations() {
         randomMoveOperation = (int) (Math.random() * COUNT_OF_MOVE_OPERATIONS);
-
 
         switch (randomMoveOperation) {
             case 0:
@@ -484,11 +410,9 @@ public class Main {
             case 2:
                 swapNodesBetweenRoutes();
                 break;
-
             case 3:
                 insertNodeInRoute();
                 break;
-
             case 4:
                 insertNodeBetweenRoutes();
                 break;
@@ -570,11 +494,10 @@ public class Main {
 
         }
 
-        calculateTotalCost();
-
+       /* calculateTotalCost();
 
         System.out.println("Total Cost Random: " + bestCostFromRandomInSol);
-        System.out.println("Total Cost NN: " + bestCostFromNNInSol);
+        System.out.println("Total Cost NN: " + bestCostFromNNInSol);*/
 
     }
 
@@ -582,7 +505,6 @@ public class Main {
 
         Random random = new Random();
 
-        //  int randomNum = list.get((int) (Math.random() * list.size()));
         int randomNum = list.get(random.nextInt(list.size()));
 
         list.remove(Integer.valueOf(randomNum));
@@ -604,7 +526,6 @@ public class Main {
             int firstRandomNode = all.get(randomIndexOfDepots).get(randomIndexOfRouteOfDepot).get(randomFirstIndexOfCityOfRouteOfDepot);
             int secondRandomNode = all.get(randomIndexOfDepots).get(randomIndexOfRouteOfDepot).get(randomSecondIndexOfCityOfRouteOfDepot);
 
-
             if (firstRandomNode != secondRandomNode) {
 
                 all.get(randomIndexOfDepots).get(randomIndexOfRouteOfDepot).set(randomFirstIndexOfCityOfRouteOfDepot, secondRandomNode);
@@ -614,7 +535,6 @@ public class Main {
         } else {
             getRandomMoveOperations();
         }
-
     }
 
     public static void swapHubWithNodeInRoute() {
@@ -653,11 +573,10 @@ public class Main {
 
         if (randomFirstIndexOfDepots != randomSecondIndexOfDepots) {
 
-            // changing first random node
+
             all.get(randomFirstIndexOfDepots).get(randomFirstIndexOfRouteOfDepot).set(randomFirstIndexOfCityOfRouteOfDepot,
                     secondRandomNode);
 
-            // changing second random node
             all.get(randomSecondIndexOfDepots).get(randomSecondIndexOfRouteOfDepot).set(randomSecondIndexOfCityOfRouteOfDepot, firstRandomNode);
         } else {
             getRandomMoveOperations();
@@ -665,7 +584,6 @@ public class Main {
     }
 
     public static void insertNodeInRoute() {
-
 
         int randomIndexOfDepots = (int) (Math.random() * indexesOfDepots.size());
 
@@ -761,8 +679,7 @@ public class Main {
 
         sol.put("Solution", trying);
 
-
-        try (FileWriter file = new FileWriter("Output.json")) {
+        try (FileWriter file = new FileWriter("solution.json")) {
             file.write(sol.toJSONString());
             file.flush();
 
